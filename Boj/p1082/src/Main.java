@@ -3,62 +3,79 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static int P[];
-    static int N, M;
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        P = new int[N];
-        for(int i=0; i<N; i++) {
-            P[i] = sc.nextInt();
-        }
-        M = sc.nextInt();
-        int ans[] = new int[100];
-        int cost = 0;
-        int idx = 0;
-        int minIdx = findMin(0);
-        if(minIdx == 0) {
-            minIdx = findMin(1);
-            if(P[minIdx] <= M) {
-                ans[idx++] = minIdx;
-                cost += P[minIdx];
-                minIdx = 0;
-            }else {
-                System.out.println(0);
-                return;
-            }
-        }
-        while(cost+P[minIdx] <= M) {
-            ans[idx++] = minIdx;
-            cost += P[minIdx];
+    public static class Number implements Comparable<Number>{
+        int number, cost;
+        public Number(int number, int cost) {
+            this.number = number;
+            this.cost = cost;
         }
 
-        for(int i=0; i<idx; i++) {
-            for(int j=N-1; j>=0; j--) {
-                if(cost-P[ans[i]]+P[j] <= M) {
-                    cost = cost-P[ans[i]]+P[j];
-                    ans[i] = j;
+        @Override
+        public int compareTo(Number o) {
+            if(this.cost > o.cost){
+                return 1;
+            } else if (this.cost == o.cost) {
+                return o.number - this.number;
+            } else {
+                return -1;
+            }
+        }
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        int[] p = new int[n];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for(int i=0; i<n; i++){
+            p[i] = Integer.parseInt(st.nextToken());
+        }
+        int m = Integer.parseInt(br.readLine());
+
+        PriorityQueue<Number> pq = new PriorityQueue<>();
+        for(int i=0; i<n; i++){
+            pq.add(new Number(i, p[i]));
+        }
+
+        Number first = pq.poll();
+        Number second = pq.poll();
+
+        List<Number> result = new ArrayList<>();
+
+        if(n>1){
+            if(first.number == 0 && m >= second.cost){
+                result.add(second);
+                m -= second.cost;
+            }
+        }
+        while (m >= first.cost){
+            result.add(first);
+            m -= first.cost;
+        }
+
+        for(int i=0; i<result.size(); i++){
+            Number target = result.get(i);
+
+            for(int j=n-1; j>-1; j--){
+                if(m >= p[j]-target.cost){
+                    m -= p[j]-target.cost;
+                    result.set(i, new Number(j,p[j]));
+
                     break;
                 }
             }
         }
 
-        for(int i=0; i<idx; i++) {
-            System.out.print(ans[i]);
+        String answer = "";
+        for(Number i : result){
+            answer += i.number;
         }
 
-    }
-
-    public static int findMin(int start) {
-        int retIdx=0, min=100;
-        for(int i=start; i<N; i++) {
-            if(min > P[i]) {
-                min = P[i];
-                retIdx = i;
-            }
+        if(answer.charAt(0) == '0'){
+            System.out.println(0);
+        } else {
+            System.out.println(answer);
         }
-
-        return retIdx;
     }
-
 }
