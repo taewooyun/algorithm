@@ -35,43 +35,42 @@ public class Main {
             papers[3]--;
             result++;
 
-            if(papers[3] >= 3){
-                papers[3] -= 3;
-            } else {
-                switch (papers[3]){
-                    case 0:
-                        if(papers[2] >= 5){
-                            papers[2] -= 5;
-                            papers[1] -= 7;
-                        } else {
-                            int empty = 27;
+            switch (papers[3]){
+                case 0:
+                    if(papers[2] >= 5){
+                        papers[2] -= 5;
+                        papers[1] -= 7;
+                    } else {
+                        int empty = 27;
 
-                            empty -= papers[2]*4;
-                            papers[2] = 0;
-                            papers[1] -= empty;
-                        }
-                        break;
-                    case 1:
-                        if(papers[2] >= 3){
-                            papers[2] -= 3;
-                            papers[1] -= 6;
-                        } else {
-                            int empty = 18;
+                        empty -= papers[2]*4;
+                        papers[2] = 0;
+                        papers[1] -= empty;
+                    }
+                    break;
+                case 1:
+                    if(papers[2] >= 3){
+                        papers[2] -= 3;
+                        papers[1] -= 6;
+                    } else {
+                        int empty = 18;
 
-                            empty -= papers[2]*4;
-                            papers[2] = 0;
-                            papers[1] -= empty;
-                        }
-                        break;
-                    case 2:
-                        if(papers[2] >= 1){
-                            papers[2] -= 1;
-                            papers[1] -= 5;
-                        } else {
-                            papers[1] -= 9;
-                        }
-                        break;
-                }
+                        empty -= papers[2]*4;
+                        papers[2] = 0;
+                        papers[1] -= empty;
+                    }
+                    break;
+                case 2:
+                    if(papers[2] >= 1){
+                        papers[2] -= 1;
+                        papers[1] -= 5;
+                    } else {
+                        papers[1] -= 9;
+                    }
+                    break;
+                case 3:
+                    papers[3] -= 3;
+                    break;
             }
         }
 
