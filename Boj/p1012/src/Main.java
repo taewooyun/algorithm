@@ -2,23 +2,87 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int M, N, K;
-    static int[][] cabbage;
-    static boolean[][] visit;
-    static int count;
-    static int[] dx = { 0, -1, 0, 1 };
+    static int[] dx = { 0, 1, 0, -1 };
     static int[] dy = { 1, 0, -1, 0 };
+    static int[][] map;
+    static boolean[][] visit;
 
-    static void dfs(int x, int y) {
-        visit[x][y] = true;
+    static int cx, cy;
+    static int M, N, K;
+    static int count;
 
-        for (int i = 0; i < 4; i++) {
-            int cx = x + dx[i];
-            int cy = y + dy[i];
+    public static void main(String[] args) throws NumberFormatException, IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
-            if (cx >= 0 && cy >= 0 && cx < M && cy < N) {
-                if (!visit[cx][cy] && cabbage[cx][cy] == 1) {
+        int T = Integer.parseInt(br.readLine());
+        for(int i=0; i<T; i++){
+            st = new StringTokenizer(br.readLine());
+
+            M = Integer.parseInt(st.nextToken());
+            N = Integer.parseInt(st.nextToken());
+            K = Integer.parseInt(st.nextToken());
+
+            map = new int[N][M];
+            visit = new boolean[N][M];
+
+            for(int j=0; j<K; j++){
+                st = new StringTokenizer(br.readLine());
+                int x = Integer.parseInt(st.nextToken());
+                int y = Integer.parseInt(st.nextToken());
+                map[y][x] = 1;
+            }
+
+            count = 0;
+
+            for(int j=0; j<N; j++){
+                for(int k=0; k<M; k++){
+                    if(map[j][k] == 1 && !visit[j][k]){
+                        count++;
+                        bfs(k, j);
+                    }
+                }
+            }
+            sb.append(count).append('\n');
+        }
+        System.out.print(sb);
+    }
+
+    static void dfs(int x, int y){
+        visit[y][x] = true;
+
+        for(int i=0; i<4; i++){
+            cx = x+dx[i];
+            cy = y+dy[i];
+
+            if(inRange()){
+                if(!visit[cy][cx] && map[cy][cx] == 1) {
                     dfs(cx, cy);
+                }
+            }
+        }
+    }
+
+    static void bfs(int x, int y){
+        visit[y][x] = true;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[] {x, y});
+
+        while (!q.isEmpty()){
+            x = q.peek()[0];
+            y = q.poll()[1];
+
+            for(int i=0; i<4; i++){
+                cx = x + dx[i];
+                cy = y + dy[i];
+
+                if(inRange()){
+                    if(!visit[cy][cx] && map[cy][cx] == 1){
+                        q.offer(new int[] {cx, cy});
+                        visit[cy][cx] = true;
+                    }
                 }
             }
 
@@ -26,38 +90,8 @@ public class Main {
 
     }
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int tc = Integer.parseInt(br.readLine());
-
-        for (int i = 0; i < tc; i++) {
-            count = 0;
-            StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            M = Integer.parseInt(st.nextToken());
-            N = Integer.parseInt(st.nextToken());
-            cabbage = new int[M][N];
-            visit = new boolean[M][N];
-
-            K = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < K; j++) {
-                st = new StringTokenizer(br.readLine(), " ");
-                int p1 = Integer.parseInt(st.nextToken());
-                int p2 = Integer.parseInt(st.nextToken());
-                cabbage[p1][p2] = 1;
-            }
-
-            for (int x = 0; x < M; x++) {
-                for (int y = 0; y < N; y++) {
-                    if (cabbage[x][y] == 1 && !visit[x][y]) {
-                        dfs(x, y);
-                        count++;
-                    }
-                }
-            }
-
-            System.out.println(count);
-        }
-
+    static boolean inRange() {
+        return (cy < N && cy >= 0 && cx < M && cx >= 0);
     }
 }
