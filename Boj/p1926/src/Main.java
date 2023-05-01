@@ -2,91 +2,99 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int n, m;
-    static int[][] arr;
+    static int height, width;
+    static int[][] map;
     static boolean[][] visit;
-    static int[] dx;
-    static int[] dy;
-    static Queue<Pair> qu;
+
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
+
+    static int cx, cy, count, size;
 
     public static void main(String args[]) throws IOException{
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-        arr = new int[n][m];
-        visit = new boolean[n][m];
-        qu = new LinkedList<>();
+        height = Integer.parseInt(st.nextToken());
+        width = Integer.parseInt(st.nextToken());
 
-        dx = new int[]{1, 0, -1, 0};
-        dy = new int[]{0, 1, 0, -1};
+        map = new int[height][width];
+        visit = new boolean[height][width];
 
-        for(int i=0; i<n; i++){
-            st = new StringTokenizer(bf.readLine());
-            for(int j=0; j<m; j++){
-                arr[i][j] = Integer.parseInt(st.nextToken());
+        for(int i = 0; i< height; i++){
+            st = new StringTokenizer(br.readLine());
+            for(int j=0; j<width; j++){
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        int count = 0;
-        int area = 0;
-        int max = 0;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++){
-                if(arr[i][j] == 0 || visit[i][j]){
-                    continue;
-                }
-                count++;
-                qu.offer(new Pair(i, j));
-                visit[i][j] = true;
-                area = 0;
-                while(!qu.isEmpty()){
-                    Pair p = qu.poll();
-                    area++;
-                    for(int k = 0; k < 4; k++){
-                        int n_x = p.x + dx[k];
-                        int n_y = p.y + dy[k];
-                        if(n_x < 0 || n_x >= n || n_y < 0 || n_y >= m){
-                            continue;
-                        }
-                        if(arr[n_x][n_y] == 1 && !visit[n_x][n_y]){
-                            qu.offer(new Pair(n_x, n_y));
-                            visit[n_x][n_y] = true;
-                        }
-                    }
-                }
-                if(area > max){
-                    max = area;
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        pq.add(0);
+
+        for(int i = 0; i< height; i++){
+            for(int j=0; j<width; j++){
+                if(map[i][j] == 1 && !visit[i][j]){
+                    count++;
+                    size = 0;
+                    dfs(j, i);
+
+                    pq.add(size);
                 }
             }
-
         }
-        System.out.println(count);
-        System.out.println(max);
+
+        sb.append(count).append("\n").append(pq.peek());
+
+        System.out.println(sb);
     }
 
-    public static class Pair{
-        int x;
-        int y;
+    static void dfs(int x, int y){
+        visit[y][x] = true;
+        size++;
 
-        public Pair(int x, int y){
-            this.x = x;
-            this.y = y;
-        }
+        for(int i=0; i<4; i++){
+            cx = x + dx[i];
+            cy = y + dy[i];
 
-        public int getX(){
-            return x;
+            if(inRange()){
+                if(!visit[cy][cx] && map[cy][cx] == 1){
+                    dfs(cx, cy);
+                }
+            }
         }
-        public int getY(){
-            return y;
-        }
-        public void setX(int x){
-            this.x = x;
-        }
-        public void setY(int y){
-            this.y = y;
-        }
+    }
 
+    static void bfs(int x, int y){
+        visit[y][x] = true;
+        size++;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[] {x, y});
+
+
+        while (!q.isEmpty()){
+            x = q.peek()[0];
+            y = q.poll()[1];
+
+            for(int i=0; i<4; i++){
+                cx = x + dx[i];
+                cy = y + dy[i];
+
+                if(inRange()){
+                    if(!visit[cy][cx] && map[cy][cx] == 1){
+                        q.offer(new int[] {cx, cy});
+                        visit[cy][cx] = true;
+
+                        size++;
+                    }
+                }
+            }
+        }
+    }
+
+    static boolean inRange(){
+        return (0 <= cy && cy < height && 0 <= cx && cx < width);
     }
 }

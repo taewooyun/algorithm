@@ -1,72 +1,68 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int N, M, V;
+    static int[][] map;
+    static boolean[] visit;
+
     static StringBuilder sb = new StringBuilder();
-    static boolean[] check;
-    static int[][] arr;
-
-    static int node, line, start;
-
-    static Queue<Integer> q = new LinkedList<>();
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         StringTokenizer st = new StringTokenizer(br.readLine());
-        node = Integer.parseInt(st.nextToken());
-        line = Integer.parseInt(st.nextToken());
-        start= Integer.parseInt(st.nextToken());
 
-        arr = new int[node+1][node+1];
-        check = new boolean[node+1];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        V = Integer.parseInt(st.nextToken());
 
-        for(int i = 0 ; i < line ; i ++) {
-            StringTokenizer str = new StringTokenizer(br.readLine());
+        map = new int[N+1][N+1];
+        for(int i=0; i<M; i++){
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            int a = Integer.parseInt(str.nextToken());
-            int b = Integer.parseInt(str.nextToken());
-
-            arr[a][b] = arr[b][a] =  1;
+            map[a][b] = map[b][a] = 1;
         }
-        //sb.append("\n");
-        dfs(start);
+
+        visit = new boolean[N+1];
+        dfs(V);
         sb.append("\n");
-        check = new boolean[node+1];
-
-        bfs(start);
-
+        visit = new boolean[N+1];
+        bfs(V);
         System.out.println(sb);
-
     }
-    public static void dfs(int start) {
 
-        check[start] = true;
-        sb.append(start + " ");
+    static void dfs(int start){
+        visit[start] = true;
+        sb.append(start).append(" ");
 
-        for(int i = 0 ; i <= node ; i++) {
-            if(arr[start][i] == 1 && !check[i])
+        for(int i=0; i<= N; i++){
+            if(!visit[i] && map[start][i] == 1)
                 dfs(i);
         }
 
     }
 
-    public static void bfs(int start) {
-        q.add(start);
-        check[start] = true;
+    static void bfs(int start){
+        visit[start] = true;
 
-        while(!q.isEmpty()) {
+        Queue<Integer> q = new LinkedList<>();
 
+        q.offer(start);
+
+        while (!q.isEmpty()){
             start = q.poll();
-            sb.append(start + " ");
+            sb.append(start).append(" ");
 
-            for(int i = 1 ; i <= node ; i++) {
-                if(arr[start][i] == 1 && !check[i]) {
-                    q.add(i);
-                    check[i] = true;
+            for(int i=0; i <= N; i++){
+                if(!visit[i] && map[start][i] == 1){
+                    q.offer(i);
+                    visit[i] = true;
                 }
             }
         }
+
     }
 }
