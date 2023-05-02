@@ -1,57 +1,72 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int N, M;
+
     static int[][] map;
-    static int n;
-    static int m;
-    static boolean[][] visited;
-    static int[] dx = { -1, 1, 0, 0 }; //x방향배열-상하
-    static int[] dy = { 0, 0, -1, 1 }; //y방향배열-좌우
+    static boolean[][] visit;
+
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
+    static int cx, cy;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
 
-        map = new int[n][m];
-        for(int i=0; i<n; i++) {
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        map = new int[N][M];
+        visit = new boolean[N][M];
+
+        for(int i=0; i<N; i++){
             String s = br.readLine();
-            for(int j=0; j<m; j++) {
+
+            for(int j=0; j<M; j++){
                 map[i][j] = s.charAt(j) - '0';
             }
         }
 
-        visited = new boolean[n][m];
-        visited[0][0] = true;
-        bfs(0, 0);
-        System.out.println(map[n-1][m-1]);
+        bfs(0,0);
+
+        System.out.println(map[N-1][M-1]);
     }
 
-    public static void bfs(int x, int y) {
+    static void bfs(int x, int y){
         Queue<int[]> q = new LinkedList<>();
-        q.add(new int[] {x,y});
 
-        while(!q.isEmpty()) {
-            int now[] = q.poll();
-            int nowX = now[0];
-            int nowY = now[1];
+        q.offer(new int[] {x, y});
+        visit[y][x] = true;
 
-            for(int i=0; i<4; i++) {
-                int nextX = nowX + dx[i];
-                int nextY = nowY + dy[i];
+        while (!q.isEmpty()){
+            x = q.peek()[0];
+            y = q.poll()[1];
 
-                if (nextX < 0 || nextY < 0 || nextX >= n || nextY >= m)
-                    continue;
-                if (visited[nextX][nextY] || map[nextX][nextY] == 0)
-                    continue;
+            for(int i=0; i<4; i++){
+                cx = x+dx[i];
+                cy = y+dy[i];
 
-                q.add(new int[] {nextX, nextY});
-                map[nextX][nextY] = map[nowX][nowY] + 1;
-                visited[nextX][nextY] = true;
+                if(inRange()){
+                    if(!visit[cy][cx] && map[cy][cx] == 1){
+                        q.offer(new int[] {cx, cy});
+                        visit[y][x] = true;
+
+                        map[cy][cx] = map[y][x]+1;
+
+                        if(visit[N-1][M-1]){
+                            return;
+                        }
+                    }
+                }
             }
         }
+
+        visit[y][x] = true;
+    }
+
+    static boolean inRange(){
+        return 0 <= cx && cx < M && 0 <= cy && cy < N;
     }
 }
