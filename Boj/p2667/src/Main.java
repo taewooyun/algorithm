@@ -1,75 +1,101 @@
 import java.io.*;
 import java.util.*;
-
 public class Main {
-    static int arr[][];
-    static boolean visit[][];
-    static int dirX[] = {0, 0, -1, 1};
-    static int dirY[] = {-1, 1, 0, 0};
+    static int N;
 
-    static int count = 0, number = 0;
-    static int nowX, nowY, N;
+    static int[][] map;
+    static boolean[][] visit;
+
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
+
+    static int cx, cy;
+
+    static int cnt, size;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        List<Integer> list = new ArrayList<>();
-
         N = Integer.parseInt(br.readLine());
-        arr = new int[N][N];
+
+        map = new int[N][N];
         visit = new boolean[N][N];
 
-        for(int i=0; i<N; i++) {
-            String str = br.readLine();
-
-            for(int j=0; j<N; j++) {
-                arr[i][j] = Character.getNumericValue(str.charAt(j));
+        for(int i=0; i<N; i++){
+            String s = br.readLine();
+            for(int j=0; j<N; j++){
+                map[i][j] = s.charAt(j) - '0';
             }
         }
 
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<N; j++) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
 
-                if(visit[i][j] == false && arr[i][j] == 1) {
-                    count = 0;
-                    number++;
-                    DFS(i, j);
-                    list.add(count);
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+                if(map[i][j] == 1 && !visit[i][j]){
+                    cnt++;
+                    size = 0;
+                    dfs(j, i);
+                    pq.offer(size);
                 }
-
             }
         }
 
-        Collections.sort(list);
-        bw.append(number + "\n");
-        for(int num : list) {
-            bw.append(num + "\n");
+        StringBuilder sb = new StringBuilder();
+
+        while (!pq.isEmpty()) {
+            sb.append(pq.poll()).append("\n");
         }
 
-        bw.flush();
-        bw.close();
+        System.out.println(cnt);
+        System.out.print(sb);
+
     }
 
-    static void DFS(int x, int y) {
-        visit[x][y] = true;
-        arr[x][y] = number;
-        count ++;
+    static void dfs(int x, int y){
+        visit[y][x] = true;
+        size++;
 
-        for(int i=0; i<4; i++) {
-            nowX = dirX[i] + x;
-            nowY = dirY[i] + y;
+        for(int i=0; i<4; i++){
+            cx = x + dx[i];
+            cy = y + dy[i];
 
-            if(Range_check() && visit[nowX][nowY] == false && arr[nowX][nowY] == 1) {
-                visit[nowX][nowY] = true;
-                arr[nowX][nowY] = number;
+            if(inRange()){
+                if(!visit[cy][cx] && map[cy][cx] == 1){
+                    dfs(cx, cy);
+                }
+            }
+        }
+    }
 
-                DFS(nowX, nowY);
+    static void bfs(int x, int y){
+        visit[y][x] = true;
+        size++;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[] {x, y});
+
+
+        while (!q.isEmpty()){
+            x = q.peek()[0];
+            y = q.poll()[1];
+
+            for(int i=0; i<4; i++){
+                cx = x + dx[i];
+                cy = y + dy[i];
+
+                if(inRange()){
+                    if (!visit[cy][cx] && map[cy][cx] == 1){
+                        q.offer(new int[] {cx, cy});
+                        visit[cy][cx] = true;
+                        size++;
+                    }
+                }
             }
         }
 
     }
 
-    static boolean Range_check() {
-        return (nowX >= 0 && nowX < N && nowY >= 0 && nowY < N);
+    static boolean inRange(){
+        return 0 <= cx && cx < N && 0<= cy && cy < N;
     }
 }
