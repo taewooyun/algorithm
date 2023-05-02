@@ -2,58 +2,58 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static int K;
+    static int N, K;
 
-    static int visited[] = new int[100001];
+    static int max = 100001;
+    static int[] visit = new int[max];
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        String input = br.readLine();
-        String[] inputs = input.split(" ");
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
 
-        N = Integer.valueOf(inputs[0]);
-        K = Integer.valueOf(inputs[1]);
+        bfs(N);
 
-        int result = bfs(N);
-        System.out.println(result);
+        System.out.println(visit[K]-1);
     }
 
-    private static int  bfs(int node)
-    {
-        Queue<Integer> queue = new LinkedList<>();
+    static void bfs(int x){
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(x);
 
-        queue.add(node);
-        int index = node;
-        int n;
-        visited[index] = 1;
-        while (queue.isEmpty() == false)
-        {
-            n = queue.remove();
+        visit[x] = 1;
 
-            if (n == K)
-            {
-                return visited[n]-1;
+        while (!q.isEmpty()){
+            if(visit[K] > 0) return;
+
+            x = q.poll();
+
+            int forward = x+1;
+            int backward = x-1;
+            int teleportation = x*2;
+
+            if(forward < max){
+                if(visit[forward] == 0){
+                    q.offer(forward);
+                    visit[forward] = visit[x]+1;
+                }
             }
 
-            if (n-1>=0 && visited[n-1] == 0)
-            {
-                visited[n-1] = visited[n]+1;
-                queue.add(n-1);
+            if(0 <= backward){
+                if(visit[backward] == 0){
+                    q.offer(backward);
+                    visit[backward] = visit[x]+1;
+                }
             }
-            if (n+1 <= 100000 && visited[n+1] == 0)
-            {
-                visited[n+1] = visited[n]+1;
-                queue.add(n+1);
-            }
-            if (2*n <= 100000 && visited[2*n] == 0)
-            {
-                visited[2*n] = visited[n] + 1;
-                queue.add(2*n);
+
+            if(teleportation < max){
+                if(visit[teleportation] == 0){
+                    q.offer(teleportation);
+                    visit[teleportation] = visit[x]+1;
+                }
             }
         }
-        return -1;
     }
 }
