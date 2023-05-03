@@ -2,50 +2,71 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static List<Integer>[] relation;
-    static boolean[] checked;
-    static int res = -1;
-    public static void main(String[] args) throws IOException{
+    static int n, m;
+    static int s, e;
+
+    static int[][] map;
+    static int[] visit;
+
+    public static void main(String[] args) throws Exception{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine());
-        relation = new ArrayList[n+1];
-        checked = new boolean[n+1];
-        for(int i=1; i<n+1; i++) {
-            relation[i] = new ArrayList<>();
-        }
-
+        n = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int x = Integer.parseInt(st.nextToken());
-        int y = Integer.parseInt(st.nextToken());
+        map = new int[n+1][n+1];
+        visit = new int[n+1];
 
-        int l = Integer.parseInt(br.readLine());
+        s = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
 
-        for(int i=0; i<l; i++) {
+        m = Integer.parseInt(br.readLine());
+
+        for(int i=0; i<m; i++){
             st = new StringTokenizer(br.readLine());
-            int p = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
-            relation[p].add(c);
-            relation[c].add(p);
+
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+
+            map[a][b] = map[b][a] = 1;
         }
 
-        dfs(x,y, 0);
-        System.out.println(res);
+        visit[s] = 1;
+        dfs(s);
+
+        if(visit[e] == 0){
+            System.out.println(-1);
+
+        } else {
+            System.out.println(visit[e]-1);
+        }
     }
 
-    static void dfs(int start, int end, int cnt) {
-        if(start == end) {
-            res = cnt;
-            return;
-        }
+    static void dfs(int start){
+        if(visit[e] > 0) return;
 
-        checked[start] = true;
-        for(int i=0; i<relation[start].size(); i++) {
-            int next = relation[start].get(i);
-            if(!checked[next]) {
-                dfs(next, end, cnt+1);
+        for(int i=1; i<=n; i++){
+            if(visit[i] == 0 && map[start][i] == 1){
+                visit[i] = visit[start] + 1;
+                dfs(i);
             }
         }
+    }
+
+    static void bfs(int start){
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(start);
+
+        while (!q.isEmpty()) {
+            start = q.poll();
+
+            for(int i=1; i<=n; i++){
+                if(visit[i] == 0 && map[start][i] == 1){
+                    q.offer(i);
+
+                    visit[i] = visit[start] + 1;
+                }
+            }
+        }
+
     }
 }
