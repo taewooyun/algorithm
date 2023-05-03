@@ -2,45 +2,60 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int F, S, G, U, D;
+
+    static int[] visit;
+
     public static void main(String args[]) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] str = br.readLine().split(" ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int F = Integer.parseInt(str[0]);
-        int S = Integer.parseInt(str[1]);
-        int G = Integer.parseInt(str[2]);
-        int U = Integer.parseInt(str[3]);
-        int D = Integer.parseInt(str[4]);
-        int[] arr = new int[F + 1];
-        System.out.println(BFS(F, S, G, U, D, arr));
+        F = Integer.parseInt(st.nextToken());
+        S = Integer.parseInt(st.nextToken());
+        G = Integer.parseInt(st.nextToken());
+        U = Integer.parseInt(st.nextToken());
+        D = Integer.parseInt(st.nextToken());
+
+        visit = new int[F+1];
+
+        bfs(S);
+
+        if(visit[G] > 0){
+            System.out.println(visit[G]-1);
+        } else {
+            System.out.println("use the stairs");
+        }
+
 
     }
 
-    public static String BFS(int Floor, int start, int end, int up, int down, int[] arr) {
-        Queue<Integer> q = new LinkedList<Integer>();
-        q.add(start);
-        arr[start] = 1;
+    static void bfs(int start){
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(start);
 
-        while (!q.isEmpty()) {
-            int current = q.poll();
-            if (current == end) {
-                return String.valueOf(arr[current] - 1);
-            }
-            if (current + up <= Floor) {
-                if (arr[current + up] == 0) {
-                    arr[current + up] = arr[current] + 1;
-                    q.add(current + up);
-                }
+        visit[start] = 1;
 
-            }
-            if (current - down > 0) {
-                if (arr[current - down] == 0) {
-                    arr[current - down] = arr[current] + 1;
-                    q.add(current - down);
+        while (!q.isEmpty()){
+            if(visit[G] > 0) return;
+
+            start = q.poll();
+
+            int up = start + U;
+            int down = start - D;
+
+            if(up <= F){
+                if(visit[up] == 0){
+                    q.offer(up);
+                    visit[up] = visit[start] + 1;
                 }
             }
 
+            if(0 < down){
+                if(visit[down] == 0){
+                    q.offer(down);
+                    visit[down] = visit[start] + 1;
+                }
+            }
         }
-        return "use the stairs";
     }
 }
