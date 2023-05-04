@@ -2,117 +2,89 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int zero=0;
-    static int cnt=0;
-    static int M,N,H;
-    static int arr[][][], map[][][];
-    static int moveX[] = {0,1,0,-1,0,0};
-    static int moveY[] = {-1,0,1,0,0,0};
-    static int moveH[] = {0,0,0,0,1,-1};
-    static ArrayList<Po> arrList = new ArrayList<>();
-    static Queue<Po> tomato = new LinkedList<Po>();
-    public static void main(String[] args) throws IOException {
+    static int M, N, H;
+    static int[][][] visit;
+
+    static int[] dx = {1, 0, 0, -1, 0, 0};
+    static int[] dy = {0, 1, 0, 0, -1, 0};
+    static int[] dz = {0, 0, 1, 0, 0, -1};
+    static int cx, cy, cz;
+
+    static int day;
+
+    static Queue<int[]> q;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         M = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
         H = Integer.parseInt(st.nextToken());
 
-        arr = new int[N][M][H];
-        map = new int[N][M][H];
+        visit = new int[H][N][M];
 
-        for(int h=0; h<H; h++) {
-            for(int n=0; n<N; n++) {
+        q = new LinkedList<>();
+
+        for(int i=0; i<H; i++){
+            for(int j=0; j<N; j++){
                 st = new StringTokenizer(br.readLine());
-                for(int m=0; m<M; m++) {
-                    int val = Integer.parseInt(st.nextToken());
-                    if(val == 1) {
-                        tomato.add(new Po(m,n,h));
-                        arrList.add(new Po(m,n,h));
+                for(int k=0; k<M; k++){
+                    int state = Integer.parseInt(st.nextToken());
+
+                    if(state > 0){
+                        q.offer(new int[] {k, j, i});
                     }
-                    arr[n][m][h] = val;
+
+                    visit[i][j][k] = state;
                 }
             }
         }
+
+        day = 0;
+
         bfs();
-        for(int h=0; h<H; h++) {
-            for(int n=0; n<N; n++) {
-                for(int m=0; m<M; m++) {
-                    if(arr[n][m][h]==0)
-                        zero++;
-                }
-            }
-        }
-        if(cnt==1 && zero>0) {
-            System.out.println("0");
-        }else if(zero == 0 && cnt>0) {
-            System.out.println(cnt-1);
-        }else {
-            System.out.println("-1");
-        }
+
+        System.out.println(day-1);
     }
 
-    public static class Po{
-        int x;
-        int y;
-        int h;
-        public Po(int x,int y,int h) {
-            this.x=x;
-            this.y=y;
-            this.h=h;
-        }
-    }
+    static void bfs(){
+        while (!q.isEmpty()) {
+            int x = q.peek()[0];
+            int y = q.peek()[1];
+            int z = q.poll()[2];
 
-    public static void bfs() {
-        Queue<Po> queue = new LinkedList<>();
-        for(int i=0; i<arrList.size(); i++) {
-            Po p = arrList.get(i);
-            map[p.y][p.x][p.h] = 1;
-            queue.add(new Po(p.x, p.y, p.h));
-        }
-        while(!queue.isEmpty()) {
-            int current = tomato.size();
-            for(int i=0; i<current; i++) {
-                Po p = tomato.poll();
-                int currentX = p.x;
-                int currentY = p.y;
-                int currentH = p.h;
+            for(int i=0; i<6; i++){
+                cx = x + dx[i];
+                cy = y + dy[i];
+                cz = z + dz[i];
 
-                for(int d=0; d<6; d++) {
-                    int newX = currentX + moveX[d];
-                    int newY = currentY + moveY[d];
-                    int newH = currentH + moveH[d];
+                if(inRange()){
+                    if(visit[cz][cy][cx] == 0){
+                        visit[cz][cy][cx] = visit[z][y][x] + 1;
 
-
-                    if(0<=newX && newX<M && 0<=newY && newY<N && 0<=newH && newH<H) {
-                        if(arr[newY][newX][newH] == 0) {
-                            arr[newY][newX][newH] = 1;
-                            tomato.add(new Po(newX, newY, newH));
-                        }
-                    }
-                }
-
-            }
-            current = queue.size();
-            for(int i=0; i<current; i++) {
-                Po p = queue.poll();
-                int x = p.x;
-                int y = p.y;
-                int h = p.h;
-
-                for(int d=0; d<6; d++) {
-                    int newX = x + moveX[d];
-                    int newY = y + moveY[d];
-                    int newH = h + moveH[d];
-                    if(0<=newX && newX<M && 0<=newY && newY<N && 0<=newH && newH<H) {
-                        if(arr[newY][newX][newH]==1 && arr[newY][newX][newH]!=-1 && map[newY][newX][newH]==0) {
-                            map[newY][newX][newH] = map[y][x][h] + 1;
-                            queue.add(new Po(newX,newY,newH));
-                        }
+                        q.offer(new int[] {cx, cy, cz});
                     }
                 }
             }
-            cnt++;
         }
+
+        for(int i=0; i<H; i++){
+            for(int j=0; j<N; j++){
+                for(int k=0; k<M; k++){
+                    if(visit[i][j][k] == 0){
+                        day = 0;
+                        return;
+                    }
+
+                    day = Math.max(day, visit[i][j][k]);
+                }
+            }
+        }
+    }
+
+
+    static boolean inRange(){
+        return 0 <= cx && cx < M && 0 <= cy & cy < N && 0 <= cz && cz < H;
     }
 }
