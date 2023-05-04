@@ -2,44 +2,79 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st;
+    static class Point{
+        int x, y;
 
-        int t = Integer.parseInt(br.readLine());
-        for(int tc=0; tc<t; tc++) {
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine());
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<T; i++){
             int n = Integer.parseInt(br.readLine());
-            List<int[]> list = new ArrayList<>();
-            for(int i=0; i<n+2; i++) {
-                st = new StringTokenizer(br.readLine());
+
+            Point[] points = new Point[n+2];
+
+            for(int j=0; j<n+2; j++){
+                StringTokenizer st = new StringTokenizer(br.readLine());
                 int x = Integer.parseInt(st.nextToken());
                 int y = Integer.parseInt(st.nextToken());
-                list.add(new int[]{x,y});
+                points[j] = new Point(x, y);
             }
 
-            boolean[][] flag = new boolean[n+2][n+2];
-            for(int i=0; i<n+2; i++) {
-                for(int j=0; j<n+2; j++) {
-                    int[] pos = list.get(i), next = list.get(j);
-                    int dis = Math.abs(pos[0] - next[0]) + Math.abs(pos[1]-next[1]);
-
-                    if(dis <= 1000) flag[i][j] =true;
-                }
+            ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+            for(int j=0; j<n+2; j++){
+                graph.add(new ArrayList<>());
             }
 
-            for(int k=0; k<n+2; k++) {
-                for(int i=0; i<n+2; i++) {
-                    for(int j=0; j<n+2; j++) {
-                        if(flag[i][k] && flag[k][j]) {
-                            flag[i][j] = true;
-                        }
+            for(int j=0; j<n+2; j++){
+                for(int k=j+1; k<n+2; k++){
+                    if(Math.abs(points[j].x - points[k].x) + Math.abs(points[j].y - points[k].y) <= 1000){
+                        graph.get(j).add(k);
+                        graph.get(k).add(j);
                     }
                 }
             }
-            bw.write(flag[0][n+1] ? "happy\n": "sad\n");
+
+            boolean result = bfs(graph, n);
+
+            if(result){
+                sb.append("happy").append("\n");
+            } else {
+                sb.append("sad").append("\n");
+            }
+
         }
-        bw.flush();
-        bw.close();
+
+        System.out.print(sb);
+    }
+
+    static boolean bfs(ArrayList<ArrayList<Integer>> graph, int n){
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(0);
+
+        boolean[] visit = new boolean[n+2];
+        visit[0] = true;
+
+        while (!q.isEmpty()) {
+            int current = q.poll();
+
+            if(current == n+1) return true;
+
+            for(int i : graph.get(current)){
+                if(!visit[i]){
+                    q.offer(i);
+                    visit[i] = true;
+                }
+            }
+        }
+
+        return false;
     }
 }
