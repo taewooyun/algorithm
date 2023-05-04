@@ -2,90 +2,82 @@ import java.util.*;
 import java.io.*;
 
 class Main {
-    static int r;
-    static int c;
     static int[][] map;
-    static int[][] visited;
-    static int[][] melt;
-    static int[] dx = {1, -1, 0, 0};
-    static int[] dy = {0, 0, 1, -1};
+    static int[][] nextMap;
+    static boolean[][] visited;
+
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {1, 0, -1, 0};
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        r = Integer.parseInt(st.nextToken());
-        c = Integer.parseInt(st.nextToken());
-        map = new int[r][c];
-        visited = new int[r][c];
-        melt = new int[r][c];
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        for(int i=0; i<r; i++) {
+        map = new int[N][M];
+        nextMap = new int[N][M];
+
+        for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=0; j<c; j++) {
+            for(int j=0; j<M; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        solution();
-    }
+        for(int i=0; i<N; i++){
+            for(int j=0; j<M; j++){
+                nextMap[i][j] = map[i][j];
+            }
+        }
 
-    static void solution() {
-        int year = 0;
+        int year = -1;
+        int cnt = 0;
 
-        while(true) {
-            int count = 0;
-            for(int i=0; i<r; i++) {
-                for(int j=0; j<c; j++) {
-                    if(visited[i][j] == 0 && map[i][j] != 0) {
-                        dfs(i, j);
-                        count++;
+        while (cnt <= 1){
+            year++;
+
+            cnt = 0;
+            visited = new boolean[N][M];
+
+            for(int i=1; i<N-1; i++){
+                for(int j=1; j<M-1; j++){
+                    if(!visited[i][j] && map[i][j] > 0){
+                        cnt++;
+                        dfs(j, i);
                     }
                 }
             }
 
-            if(count == 0) {
-                System.out.println(0);
-                break;
-            } else if(count >= 2) {
-                System.out.println(year);
-                break;
+            for(int i=0; i<N; i++){
+                for(int j=0; j<M; j++){
+                    map[i][j] = nextMap[i][j];
+                }
             }
 
-            melting();
-            year++;
-        }
-    }
-
-    static void dfs(int x, int y) {
-        visited[x][y] = 1;
-
-        for(int i=0; i<4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-
-            if(0 <= nx && nx < r && 0 <= ny && ny < c) {
-                // 1년 후에 녹는 빙산의 양 구하기
-                if(map[nx][ny] == 0)
-                    melt[x][y]++;
-
-                // dfs 재귀
-                if(visited[nx][ny] == 0 && map[nx][ny] != 0)
-                    dfs(nx, ny);
+            if(cnt == 0){
+                year = 0;
+                break;
             }
         }
+
+        System.out.println(year);
     }
 
-    static void melting() {
-        for(int i=0; i<r; i++) {
-            for(int j=0; j<c; j++) {
-                map[i][j] -= melt[i][j];
+    static void dfs(int x, int y){
+        visited[y][x] = true;
 
-                if(map[i][j] < 0)
-                    map[i][j] = 0;
+        for(int i=0; i<4; i++){
+            int cx = x + dx[i];
+            int cy = y + dy[i];
 
-                visited[i][j] = 0;
-                melt[i][j] = 0;
+            if(map[cy][cx] == 0){
+                if(nextMap[y][x] > 0){
+                    nextMap[y][x] -= 1;
+                }
+            } else if(!visited[cy][cx]){
+                dfs(cx, cy);
             }
         }
     }
