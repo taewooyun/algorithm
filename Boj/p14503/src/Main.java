@@ -2,58 +2,81 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int y,x,count;
-    static int map[][];
-    static int dy[] = {-1,0,1,0};
-    static int dx[] = {0,1,0,-1};
-    public static void main(String[] args) throws IOException {
+    static int N, M;
+    static int d;
 
+    static int[][] visit;
+
+    static int[] dx = {0, 1, 0, -1};
+    static int[] dy = {-1, 0, 1, 0};
+    static int cx, cy;
+    static int cnt;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer stk = new StringTokenizer(br.readLine(), " ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        y = Integer.parseInt(stk.nextToken());
-        x = Integer.parseInt(stk.nextToken());
-        map = new int[y][x];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        stk = new StringTokenizer(br.readLine(), " ");
-        int r = Integer.parseInt(stk.nextToken());
-        int c = Integer.parseInt(stk.nextToken());
-        int d = Integer.parseInt(stk.nextToken());
-        count = 1;
+        st = new StringTokenizer(br.readLine());
 
-        for(int i=0; i<y; i++) {
-            stk = new StringTokenizer(br.readLine(), " ");
-            for(int j=0; j<x; j++) {
-                map[i][j] = Integer.parseInt(stk.nextToken());
+        cy = Integer.parseInt(st.nextToken());
+        cx = Integer.parseInt(st.nextToken());
+        d = Integer.parseInt(st.nextToken());
+
+        visit = new int[N][M];
+        for(int i=0; i<N; i++){
+            st = new StringTokenizer(br.readLine());
+            for(int j=0; j<M; j++){
+                visit[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        dfs(r,c,d);
-        System.out.println(count);
+        dfs(cx, cy, d);
+        System.out.println(cnt);
     }
 
-    public static void dfs(int r, int c, int direction) {
-        map[r][c] = -1;
+    static void dfs(int x, int y, int direction){
+        if(visit[y][x] == 0){
+            visit[y][x] = 2;
+            cnt++;
+        }
 
-        for(int i=0; i<4; i++) {
+        boolean complete = false;
+        int enter = direction;
+
+        for(int i=0; i<4; i++){
+            int next = (direction + 3) % 4;
+
+            cx = x + dx[next];
+            cy = y + dy[next];
+
+            if (inRange()) {
+                if(visit[cy][cx] == 0){
+                    dfs(cx, cy, next);
+                    complete = true;
+                    break;
+                }
+            }
+
             direction = (direction + 3) % 4;
-            int ny = r + dy[direction];
-            int nx = c + dx[direction];
+        }
 
-            if(ny >=0 && ny < y && nx >= 0 && nx < x && map[ny][nx] == 0) {
-                count++;
-                dfs(ny,nx, direction);
+        if(!complete){
+            int back = (enter + 2) % 4;
+            cx = x + dx[back];
+            cy = y + dy[back];
 
-                return;
+            if(inRange()){
+                if(visit[cy][cx] != 1){
+                    dfs(cx, cy, enter);
+                }
             }
         }
+    }
 
-        int back = (direction + 2) % 4;
-        int by = r + dy[back];
-        int bx = c + dx[back];
-
-        if(by>=0 && by<y && bx>=0 && bx<x && map[by][bx] != 1) {
-            dfs(by,bx,direction);
-        }
+    static boolean inRange(){
+        return 0<=cx&&cx<M&&0<=cy&&cy<N;
     }
 }
