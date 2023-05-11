@@ -30,24 +30,15 @@ public class Main {
     }
 
     static void dfs(int start, String str){
-        int one = start - 1;
-        int two = start - 2;
-        int three = start - 3;
-
         if(start == 0){
             que.offer(str);
         }
 
-        if(one >= 0){
-            dfs(one, str+"1+");
-        }
-
-        if(two >= 0){
-            dfs(two, str+"2+");
-        }
-
-        if(three >= 0){
-            dfs(three, str+"3+");
+        for(int i=1; i<4; i++){
+            int num = start - i;
+            if(num >= 0){
+                dfs(num, str+i+"+");
+            }
         }
     }
 }
