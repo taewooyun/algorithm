@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
     static int N, M;
-    static Queue<String> que;
     static StringBuilder sb;
 
     public static void main(String[] args) throws Exception {
@@ -12,8 +11,6 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-
-        que = new LinkedList<>();
 
         sb = new StringBuilder();
         permutation(1, 0, "");
