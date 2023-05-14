@@ -16,7 +16,7 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
 
         arr = new int[C];
-        visited = new boolean[100];
+        visited = new boolean[27];
 
         st = new StringTokenizer(br.readLine());
         for(int i=0; i<C; i++){
