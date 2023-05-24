@@ -1,4 +1,7 @@
 # 📚 Algorithm Study
+
+<br>
+
 - ## [BOJ]
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p1012/src/Main.java">[백준] 1012 - 유기농 배추 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p10451/src/Main.java">[백준] 10451 - 순열 싸이클 (JAVA)</a><br>
@@ -66,8 +69,11 @@
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p1699/src/Main.java">[백준] 1699 - 제곱수의 합 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p11057/src/Main.java">[백준] 11057 - 오르막 수 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p10844/src/Main.java">[백준] 10844 - 쉬운 계단 수 (JAVA)</a><br>
+
 <br>
+
 - ## [Programmers]
+
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/1845.java">[프로그래머스] 1845 - 폰켓몬 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/12901.java">[프로그래머스] 12901 - 2016년 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/12903.java">[프로그래머스] 12903 - 가운데 글자 가져오기 (JAVA)</a><br>
