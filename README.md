@@ -86,3 +86,4 @@
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/160586.java">[프로그래머스] 160586 - 대충 만든 자판 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/159994.java">[프로그래머스] 159994 - 카드 뭉치 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/155652.java">[프로그래머스] 155652 - 둘만의 암호 (JAVA)</a><br>
+1. <a href="https://github.com/taewooyun/algorithm/blob/main/Prgrms/150370.java">[프로그래머스] 150370 - 개인정보 수집 유효기간 (JAVA)</a><br>
