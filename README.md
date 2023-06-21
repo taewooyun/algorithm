@@ -3,7 +3,7 @@
 <br>
 
 - ## [BOJ]
-1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p1012/src/Main.java">[백준] 1012 - 유기농 배추 (JAVA)</a><br>
+1. <a href="https://velog.io/@taewooyun/%EB%B0%B1%EC%A4%80-1012-%EC%9C%A0%EA%B8%B0%EB%86%8D-%EB%B0%B0%EC%B6%94-JAVA">[백준] 1012 - 유기농 배추 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p10451/src/Main.java">[백준] 10451 - 순열 싸이클 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p10800/src/Main.java">[백준] 10800 - 컬러볼 (JAVA)</a><br>
 1. <a href="https://github.com/taewooyun/algorithm/blob/main/Boj/p1082/src/Main.java">[백준] 1082 - 방 번호 (JAVA)</a><br>
